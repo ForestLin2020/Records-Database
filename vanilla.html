@@ -1,12 +1,405 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <!--Bootstrap and JQuery-->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Vue Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!--JQuery UI-->
+    <!-- <link rel="stylesheet" href="/scripts/jquery-ui/jquery-ui.min.css"> -->
+    <link
+      rel="stylesheet"
+      href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css"
+    />
+    <!-- <script src="/scripts/jquery-ui/jquery-ui.min.js"></script> -->
+    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <!--Stylesheets-->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/e20aed6eb3.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
+
   <body>
-    <h1>Hello!</h1>
+    <i
+      class="
+        fas
+        fa-chevron-left
+        toggle-btn
+        expand_arrow
+        overflow-auto
+        position-fixed
+      "
+    ></i>
+    <!-- sidebar
+    invisible-scrollbar
+    position-fixed
+    top-0
+    left-0
+    overflow-auto
+    h-100
+    float-left -->
+
+    <div class="container-fluid bg-primary Brand royal-blue">
+      <div class="row">
+        <nav class="navbar">
+          <div class="container" style="text-align: center; display: block">
+            <a class="navbar-brand" href="#">
+              <img src="Images/byu.png" height="65px" alt="BYU Logo" />
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- vue start -->
+      <section id="stats-vue">
+        <div class="container">
+          <div class="row mb-3">
+            <!-- Input for individual or team -->
+            <div class="col-md-3 col-sm-12">
+              <div class="form-group">
+                <label>Type</label>
+                <select
+                  id="type_option"
+                  class="form-control"
+                  name="playerteam"
+                  v-model="selected.type"
+                  @change="getCategories(); getTable();"
+                >
+                  <option value="" disabled selected>Choose Type</option>
+                  <option
+                    v-for="type_option in type_options"
+                    v-bind:value="type_option.value"
+                  >
+                    {{ type_option.text }}
+                  </option>
+                  <!-- <option value=""></option>
+                <option value="team">Team</option>
+                <option value="individual">Player</option> -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Input for time period -->
+            <div class="col-md-3 col-sm-12">
+              <div class="form-group">
+                <label>Time</label>
+                <select
+                  id="time_option"
+                  class="form-control"
+                  name="time"
+                  v-model="selected.time"
+                  @change="getStats(); getTable();"
+                >
+                  <option value="" disabled selected>Choose Time</option>
+                  <!-- v-if => hide career when type is team -->
+                  <option
+                    v-for="time_option in time_options"
+                    v-bind:value="time_option.value"
+                    v-if="!(selected.type === 'team' && time_option.value === 'career')"
+                  >
+                    {{ time_option.text }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Input for statistical category -->
+            <div class="col-md-3 col-sm-12">
+              <div class="form-group">
+                <label>Category</label>
+                <select
+                  id="category_option"
+                  class="form-control"
+                  name="category"
+                  v-model="selected.category"
+                  @change="getStats(); getTable();"
+                >
+                  <option value="" disabled selected>Choose Category</option>
+                  <!-- category_options insert -->
+                  <option
+                    v-for="category_option in category_options"
+                    v-bind:value="category_option.URL"
+                  >
+                    {{ category_option.Name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Input for stat in statstical category -->
+            <div class="col-md-3 col-sm-12">
+              <div class="form-group">
+                <label>Statistic</label>
+                <select
+                  id="statistic_option"
+                  class="form-control"
+                  name="statistic"
+                  v-model="selected.statistic"
+                  @change="getTable(); statUI()"
+                >
+                  <!-- statistic_option insert -->
+                  <option value="" disabled selected>Choose Statistic</option>
+                  <!-- category_options insert -->
+                  <option
+                    v-for="statistic_option in statistic_options"
+                    v-bind:value="statistic_option.URL"
+                  >
+                    {{ statistic_option.Name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Update button -->
+          <div class="row">
+            <div class="col-md-3 col-sm-12 mb-3">
+              <div class="form-group">
+                <button
+                  type="button"
+                  class="btn btn-warning btn-sm"
+                  style="width: 100%; height: 100%"
+                  ng-click="showHideFilter()"
+                >
+                  Advanced Filter
+                </button>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-12 mb-3">
+              <!-- Update button -->
+              <div class="form-group">
+                <button
+                  id="update_button"
+                  type="button"
+                  class="btn btn-success btn-sm"
+                  style="width: 100%; height: 100%"
+                  @click="getTable"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="mb-3">
+              <table
+                id="stats_table"
+                class="table table-striped"
+                v-if="loading"
+              >
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th v-if="table['type_option']">Name</th>
+                    <th>Value</th>
+                    <th v-if="table['time_option_season']">Season</th>
+                    <th v-if="table['time_option_seasons']">Seasons</th>
+                    <th v-if="table['table_opponent']">Opponent</th>
+                    <th v-if="table['table_result']">Result</th>
+                    <th v-if="table['table_date']">Date</th>
+                    <th v-if="table['table_quarter']">Quarter</th>
+                    <th v-if="table['tabel_half']">Half</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if=" stats && stats.length <= 0">
+                    <td
+                      v-if="timeCompare('season') || timeCompare('career')"
+                      colspan="4"
+                    >
+                      No data to show
+                    </td>
+                    <td v-if="timeCompare('game')" colspan="6">
+                      No data to show
+                    </td>
+                    <td
+                      v-if="timeCompare('qtr') || timeCompare('half')"
+                      colspan="7"
+                    >
+                      No data to show
+                    </td>
+                  </tr>
+                  <tr
+                    v-if="stats.length > 0"
+                    v-for="(player, index) in stats"
+                    :key="index"
+                  >
+                    <!-- <td><span>{{x.recordBookRank}}</span></td> -->
+                    <td>{{ rankStartPerPage + index }}</td>
+                    <td v-if="table['type_option']">
+                      <a v-bind:href="player.player_profile" target="_blank">
+                        {{ player.name }}
+                      </a>
+                    </td>
+                    <td>{{ player[selected.category][selected.statistic] }}</td>
+                    <td v-if="table['time_option_season']">
+                      {{ player.season }}
+                    </td>
+                    <td
+                      v-if="table['time_option_seasons'] && player.seasons_played && player.seasons_played.length > 0"
+                    >
+                      {{ player.seasons_played[0] + "-" +
+                      player.seasons_played[player.seasons_played.length - 1] }}
+                    </td>
+                    <td v-if="table['table_opponent']">{{player.opponent}}</td>
+                    <td v-if="table['table_result']">
+                      <a v-bind:href="player.game_stats_url" target="_blank"
+                        >{{player.result}}</a
+                      >
+                    </td>
+                    <td v-if="table['table_date']">
+                      {{formDateStr(player.date)}}
+                    </td>
+                    <td v-if="table['table_quarter']">{{player.qtr}}</td>
+                    <td v-if="table['tabel_half']">{{player.half}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- pagination start -->
+              <nav aria-label="Page navigation example" v-if="loading">
+                <!-- <nav aria-label="Page navigation example"> -->
+                <ul class="pagination">
+                  <li
+                    v-if="currentPage>1"
+                    @click="changePage(currentPage-1)"
+                    class="page-item"
+                  >
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    <!-- </li v-for="pagi in current" > -->
+                  </li>
+
+                  <li
+                    v-if="!(beforePage<1)"
+                    @click="changePage(1)"
+                    class="page-item"
+                  >
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li
+                    v-if="!(beforePage<1+2)"
+                    class="page-item"
+                    style="pointer-events: none; cursor: default"
+                  >
+                    <a class="page-link" href="#">...</a>
+                  </li>
+                  <li
+                    v-if="!(beforePage<1+1)"
+                    class="page-item"
+                    @click="changePage(beforePage)"
+                  >
+                    <a class="page-link" href="#">{{ beforePage }}</a>
+                  </li>
+                  <li class="page-item active" @click="changePage(currentPage)">
+                    <a class="page-link" href="#">{{ currentPage }}</a>
+                  </li>
+                  <li
+                    v-if="!(afterPage>totalPages-1)"
+                    class="page-item"
+                    @click="changePage(afterPage)"
+                  >
+                    <a class="page-link" href="#">{{ afterPage }}</a>
+                  </li>
+                  <li
+                    v-if="!(afterPage>totalPages-2)"
+                    class="page-item"
+                    style="pointer-events: none; cursor: default"
+                  >
+                    <a class="page-link" href="#">...</a>
+                  </li>
+                  <li
+                    v-if="!(afterPage>totalPages)"
+                    @click="changePage(totalPages)"
+                    class="page-item"
+                  >
+                    <a class="page-link" href="#">{{ totalPages }}</a>
+                  </li>
+                  <li
+                    v-if="currentPage < totalPages"
+                    @click="changePage(currentPage+1)"
+                    class="page-item"
+                  >
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <!-- pagination end -->
+            </div>
+          </div>
+        </div>
+
+        <!-- sidebar demo start -->
+
+        <div
+          id="mySidebar"
+          class="
+            sidebar
+            invisible-scrollbar
+            position-fixed
+            top-0
+            left-0
+            overflow-auto
+            h-100
+            float-left
+          "
+        >
+          <!-- All time stats start -->
+          <div class="">
+            <table
+              id="allTime_stats_table"
+              class="table table-striped"
+              v-if="loading"
+              v-for="c in allTime_categories"
+            >
+              <thead>
+                <tr>
+                  <th colspan="2">{{c.Name}}</th>
+                </tr>
+                <tr>
+                  <th>Stat</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="object in statObject[c.URL]">
+                  <td>{{ object.Name }}</td>
+                  <td>{{ object.value }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- All time stats end -->
+        </div>
+        <!-- sidebar demo end -->
+      </section>
+      <!-- vue end -->
+    </div>
+
+    <script src="./scripts/scripts.js"></script>
   </body>
 </html>
