@@ -292,15 +292,6 @@ new Vue({
       this.getTable();
       console.log(this.currentPage);
     },
-    myTouchStartHandler() {
-      console.log("Moved");
-      // let p = e.touches[0];
-      // let el = document.elementFromPoint(p.clientX, p.clientY);
-      // let cmp = this.$children.find(c => c.$el === el);
-      // if (cmp) {
-      //   cmp.setActive()
-      // }
-    },
   },
 });
 
