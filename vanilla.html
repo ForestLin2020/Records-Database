@@ -39,32 +39,24 @@
   </head>
 
   <body>
-    <i
-      class="
-        fas
-        fa-chevron-left
-        toggle-btn
-        expand_arrow
-        overflow-auto
-        position-fixed
-      "
-    ></i>
-    <!-- sidebar
-    invisible-scrollbar
-    position-fixed
-    top-0
-    left-0
-    overflow-auto
-    h-100
-    float-left -->
-
-    <div class="container-fluid bg-primary Brand royal-blue">
+    <div class="container-fluid bg-primary brand royal-blue position-fixed">
       <div class="row">
         <nav class="navbar">
           <div class="container" style="text-align: center; display: block">
             <a class="navbar-brand" href="#">
               <img src="Images/byu.png" height="65px" alt="BYU Logo" />
             </a>
+            <span class="icon-info position-fixed">Basic Stats</span>
+            <i
+              class="
+                fas
+                fa-chart-bar
+                toggle-btn
+                overflow-auto
+                position-fixed
+                stats-toggle-icon
+              "
+            ></i>
           </div>
         </nav>
       </div>
@@ -72,7 +64,7 @@
 
     <div class="container">
       <!-- vue start -->
-      <section id="stats-vue">
+      <section id="stats-vue" class="">
         <div class="container">
           <div class="row mb-3">
             <!-- Input for individual or team -->

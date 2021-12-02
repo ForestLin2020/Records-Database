@@ -309,26 +309,23 @@ document
   .querySelector(".toggle-btn")
   .addEventListener("click", function () {
     document.querySelector(".sidebar").classList.toggle("active");
-    // document.querySelector(".expand_arrow").classList.toggle("active");
+    document.querySelector(".stats-toggle-icon").classList.toggle("active");
   });
 
-$("body").mouseup(function () {
-  $(".sidebar").removeClass("active");
-  $(".expand_arrow").removeClass("active");
+// icon info hover for computer
+// $(".stats-toggle-icon").hover(
+//   function () {
+//     $(".icon-info").css("opacity", "1");
+//     $(".icon-info").css("right", "70px");
+//   },
+//   function () {
+//     $(".icon-info").css("opacity", "0");
+//     $(".icon-info").css("right", "0px");
+//   }
+// );
+
+// icon info hover for mobile
+$(".stats-toggle-icon").click(function () {
+  $(".icon-info").css("opacity", "0");
+  $(".icon-info").css("right", "0px");
 });
-
-$("#stats-vue").bind("touchmove", function (e) {
-  // e.preventDefault();
-  $(".sidebar").removeClass("active");
-  $(".expand_arrow").removeClass("active");
-});
-
-// function openNav() {
-//   // document.getElementById("mySidebar").style.width = "450px";
-//   document.getElementById("stats-vue").style.marginRight = "450px";
-// }
-
-// function closeNav() {
-//   // document.getElementById("mySidebar").style.width = "0";
-//   document.getElementById("stats-vue").style.marginRight = "0";
-// }
