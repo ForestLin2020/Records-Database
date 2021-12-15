@@ -63,6 +63,7 @@ new Vue({
       statistic: undefined,
     },
     loading: false,
+    advanceFilter: true,
     table: {
       type_option: false,
       time_option_season: false,
@@ -123,7 +124,9 @@ new Vue({
         alert("Error Input on Type Box!");
       }
     },
-
+    advanceFilterButtonToggle(){
+      this.advanceFilter = !this.advanceFilter;
+    },
     getStats() {
       // =================== time and category will trigger statistic ===================
       // statistic options = stat.common[category] + stat.season / stat.career[category]
@@ -248,7 +251,6 @@ new Vue({
         this.selected.time.includes("qtr")
       );
     },
-
     formDateStr(str) {
       var date = new Date(str);
       var dateStr =
@@ -259,7 +261,6 @@ new Vue({
         date.getFullYear();
       return dateStr;
     },
-
     containsObject(list, obj) {
       var i;
       for (i = 0; i < list.length; i++) {
@@ -292,6 +293,7 @@ new Vue({
       this.getTable();
       console.log(this.currentPage);
     },
+
   },
 });
 

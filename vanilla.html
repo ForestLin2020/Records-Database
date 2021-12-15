@@ -42,20 +42,13 @@
     <div class="container-fluid bg-primary brand royal-blue position-fixed">
       <div class="row">
         <nav class="navbar">
-          <div class="container" style="text-align: center; display: block">
+          <div class="container" style="text-align: center; display: block;">
             <a class="navbar-brand" href="#">
               <img src="./images/byu.png" height="65px" alt="BYU Logo" />
             </a>
             <span class="icon-info position-fixed">Basic Stats!</span>
             <i
-              class="
-                fas
-                fa-chart-bar
-                toggle-btn
-                overflow-auto
-                position-fixed
-                stats-toggle-icon
-              "
+              class="fas fa-chart-bar toggle-btn overflow-auto position-fixed stats-toggle-icon"
             ></i>
           </div>
         </nav>
@@ -171,8 +164,8 @@
                 <button
                   type="button"
                   class="btn btn-warning btn-sm"
-                  style="width: 100%; height: 100%"
-                  ng-click="showHideFilter()"
+                  style="width: 100%; height: 100%;"
+                  @click="advanceFilterButtonToggle"
                 >
                   Advanced Filter
                 </button>
@@ -185,13 +178,122 @@
                   id="update_button"
                   type="button"
                   class="btn btn-success btn-sm"
-                  style="width: 100%; height: 100%"
+                  style="width: 100%; height: 100%;"
                   @click="getTable"
                 >
                   Update
                 </button>
               </div>
             </div>
+          </div>
+
+          <div v-if="advanceFilter">
+            <form>
+              <div class="form group">
+                <label>Conference</label>
+                <select
+                  class="form-control"
+                  name="conference"
+                  ng-model="option['conference']"
+                  ng-change="changeFrom('conference')"
+                >
+                  <option value="">--None--</option>
+                  <option ng-repeat="c in allConferences" value="Big12"
+                    >Big12</option
+                  >
+                </select>
+              </div>
+
+              <div class="form-group" style="text-align: center;">
+                <label>or</label>
+              </div>
+
+              <div class="form group">
+                <label>Opponent</label>
+                <select
+                  class="form-control"
+                  name="opponents"
+                  ng-model="option['opponent']"
+                  ng-change="changeFrom('opponent')"
+                >
+                  <option value="">--None--</option>
+                  <option ng-repeat="c in confOpponents" value="{{c.id}}"
+                    >c.name</option
+                  >
+                </select>
+              </div>
+
+              <div class="form-group" style="text-align: center;">
+                <label>and/or</label>
+              </div>
+
+              <div class="form group col-xs-6">
+                <label>Location</label>
+                <select
+                  class="form-control"
+                  name="location"
+                  ng-model="option['location']"
+                  ng-change="changeFrom('location')"
+                >
+                  <option value="">--None--</option>
+                  <option value="H">Home Games</option>
+                  <option value="V">Away Games</option>
+                  <option value="N">Neutral Games</option>
+                  <option value="P">Postseason Games</option>
+                </select>
+              </div>
+              <hr />
+              <div class="form group col-xs-6">
+                <label>Ranked</label>
+                <select
+                  class="form-control"
+                  name="ranked"
+                  ng-model="option['ranked']"
+                  ng-change="changeFrom('ranked')"
+                >
+                  <option value="">--None--</option>
+                  <option value="25">vs. Top 25</option>
+                  <option value="20">vs. Top 20</option>
+                  <option value="15">vs. Top 15</option>
+                  <option value="10">vs. Top 10</option>
+                  <option value="5">vs. Top 5</option>
+                </select>
+              </div>
+              <hr />
+
+              <div class="form group">
+                <label>Time span in </label>
+                <select
+                  class="form-control"
+                  name="CustTime"
+                  ng-model="option['yearOrDate']"
+                  ng-change="changeDateOrYearValues()"
+                >
+                  <option value="year">Years</option>
+                  <option value="date">Dates</option>
+                </select>
+              </div>
+              <label>From</label>
+              <div class="form group" ng-if="option['yearOrDate'] === 'date'">
+                <input
+                  type="date"
+                  name="custDate1"
+                  id="custDate1"
+                  ng-model="option['date1']"
+                  ng-change="changeRangeValue('date1')"
+                  class="form-control"
+                />
+                <label>to</label>
+                <input
+                  type="date"
+                  name="custDate2"
+                  id="custDate2"
+                  ng-model="option['date2']"
+                  ng-change="changeRangeValue('date2')"
+                  class="form-control"
+                />
+              </div>
+            </form>
           </div>
 
           <div class="row">
@@ -294,7 +396,7 @@
                   <li
                     v-if="!(beforePage<1+2)"
                     class="page-item"
-                    style="pointer-events: none; cursor: default"
+                    style="pointer-events: none; cursor: default;"
                   >
                     <a class="page-link" href="#">...</a>
                   </li>
@@ -318,7 +420,7 @@
                   <li
                     v-if="!(afterPage>totalPages-2)"
                     class="page-item"
-                    style="pointer-events: none; cursor: default"
+                    style="pointer-events: none; cursor: default;"
                   >
                     <a class="page-link" href="#">...</a>
                   </li>
@@ -349,16 +451,7 @@
 
         <div
           id="mySidebar"
-          class="
-            sidebar
-            invisible-scrollbar
-            position-fixed
-            top-0
-            left-0
-            overflow-auto
-            h-100
-            float-left
-          "
+          class="sidebar invisible-scrollbar position-fixed top-0 left-0 overflow-auto h-100 float-left"
         >
           <!-- All time stats start -->
           <div class="">
