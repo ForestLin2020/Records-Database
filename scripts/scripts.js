@@ -356,7 +356,11 @@ new Vue({
       this.afterPage = selectedPage + 1;
       this.getTable();
     },
-
+    playUrlTrim(nid, opponent){
+      // https://byucougars.com/game/football/1295638/south-florida#eventstats
+      var title = opponent.replaceAll(/[^\w\s]/gi, '').replaceAll(" ", "-").toLowerCase()
+      return `https://byucougars.com/game/football/${nid}/${title}#eventstats`;
+    },
   },
 });
 

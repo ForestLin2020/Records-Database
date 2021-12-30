@@ -381,7 +381,10 @@
                     </td>
                     <td v-if="table['table_opponent']">{{player.opponent}}</td>
                     <td v-if="table['table_result']">
-                      <a v-bind:href="player.game_stats_url" target="_blank"
+                      <!-- https://byucougars.com/game/football/1295638/south-florida#eventstats -->
+                      <a
+                        v-bind:href="playUrlTrim(player.game_nid, player.opponent)"
+                        target="_blank"
                         >{{player.result}}</a
                       >
                     </td>
