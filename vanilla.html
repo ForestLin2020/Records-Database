@@ -188,7 +188,7 @@
             </div>
           </div>
 
-          <div v-if="advanceFilter">
+          <div v-if="advanceFilter" class="mb-3">
             <form>
               <div class="form group" v-model="conferences">
                 <label>Conference</label>
@@ -322,16 +322,20 @@
               >
                 <thead>
                   <tr>
-                    <th>Rank</th>
+                    <!-- Rank -->
+                    <th>R.</th>
                     <th v-if="table['type_option']">Name</th>
-                    <th>Value</th>
+                    <!-- Value -->
+                    <th>Val.</th>
                     <th v-if="table['time_option_season']">Season</th>
                     <th v-if="table['time_option_seasons']">Seasons</th>
                     <th v-if="table['table_opponent']">Opponent</th>
                     <th v-if="table['table_result']">Result</th>
                     <th v-if="table['table_date']">Date</th>
-                    <th v-if="table['table_quarter']">Quarter</th>
-                    <th v-if="table['tabel_half']">Half</th>
+                    <!-- Quarter -->
+                    <th v-if="table['table_quarter']">Qtr.</th>
+                    <!-- Half -->
+                    <th v-if="table['tabel_half']">H.</th>
                   </tr>
                 </thead>
                 <tbody>

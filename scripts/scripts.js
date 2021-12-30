@@ -9,18 +9,18 @@ var statsUrl =
 
 // For UI to format dates
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Jan.", // "January",
+  "Feb.", // "February",
+  "Mar.",  // "March",
+  "Apr.",  // "April",
+  "May",  //"May",
+  "Jun.", // "June",
+  "Jul.", // "July",
+  "Aug.", // "August",
+  "Sep.",  // "September",
+  "Oct.",  // "October",
+  "Nov.", // "November",
+  "Dec.", // "December",
 ];
 
 // Vue trigger update button

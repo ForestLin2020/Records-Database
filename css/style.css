@@ -105,6 +105,10 @@ body i {
 
 /* from 0 to 600px width */
 @media only screen and (max-width: 600px) {
+  body {
+    font-size: 10px;
+  }
+
   .icon-info {
     color: #4169e1;
     right: 65px;
