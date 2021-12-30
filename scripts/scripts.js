@@ -31,6 +31,7 @@ new Vue({
     message: "I am here",
     categories: [],
     conferences: [],
+    opponents:[],
     stat: [],
     stats: [],
     allTime_stats: [],
@@ -57,15 +58,24 @@ new Vue({
     category_options: [],
     statistic_options: [],
     selected: {
-      type: undefined,
+      type: undefined, // undefined for no input
       time: undefined,
       category: undefined,
       statistic: undefined,
+      conference: undefined,
+      opponent: undefined,
+      location: undefined,
+      ranked: undefined,
+      timeSpan:"year",
+      date1: undefined,
+      date2: undefined,
+      year1: undefined,
+      year2: undefined,
     },
     loading: false,
-    advanceFilter: true,
+    advanceFilter: false,
     table: {
-      type_option: false,
+      type_option: false, // false or true for showing v-if or not 
       time_option_season: false,
       time_option_seasons: false,
       table_opponent: false,
@@ -80,26 +90,17 @@ new Vue({
     beforePage: undefined,
     afterPage: undefined,
   },
-  mounted: function () {
+  mounted: async function () {
     // ======= Getting Categorirs from URL API =======
     axios
       .get(categoriesUrl)
       .then(function (response) {
         this.categories = response.data;
-        console.log(categories);
       })
       .catch(function (error) {
         console.log(error);
       });
-    // ======= Getting Conferences from URL API =======
-    axios
-      .get(conferencesUrl)
-      .then(function (response) {
-        this.conferences = response.data;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+
     // ======= Getting Stat from URL API =======
     axios
       .get(statUrl)
@@ -109,8 +110,26 @@ new Vue({
       .catch(function (error) {
         console.log(error);
       });
+
+    // ======= fetch Conferences from URL API =======
+    const res = await fetch(conferencesUrl);
+    const data = await res.json();
+    this.conferences = data;
   },
   methods: {
+    cleanTimeSpan(){
+      if (this.selected.timeSpan === 'year') {
+        this.selected.date1 = "";
+        this.selected.date2 = "";
+      } else if (this.selected.timeSpan === 'date') {
+        this.selected.year1 = "";
+        this.selected.year2 = "";
+      }
+
+    },
+    getOppoent(){
+      this.opponents = this.conferences.filter(c => c.name === this.selected.conference)[0].teams;
+    },
     getCategories() {
       if (this.selected.type === "team") {
         this.category_options = categories.filter((c) => {
@@ -162,11 +181,24 @@ new Vue({
         this.statistic_options = common_options.concat(time_options);
       }
     },
+    emptyOldStatOption(){
+      this.selected.statistic = undefined;
+      this.loading = false;
+    },
     getTable() {
       let type = this.selected.type;
       let time = this.selected.time;
       let category = this.selected.category;
       let statistic = this.selected.statistic;
+
+      let conference = this.selected.conference;
+      let location = this.selected.location;
+      let opponent = this.selected.opponent;
+      let ranked = this.selected.ranked;
+      let date1 = this.selected.date1;
+      let date2 = this.selected.date2;
+      let year1 = this.selected.year1;
+      let year2 = this.selected.year2;
 
       if (type && time && category && statistic) {
         this.loading = true;
@@ -184,6 +216,14 @@ new Vue({
             time: time,
             category: category,
             stat: statistic,
+            conference: conference,
+            location: location, 
+            opponent: opponent, 
+            ranked: ranked,
+            year1:year1,
+            year2:year2,
+            date1:date1,
+            date2:date2,
           })
           .then((response) => {
             // axios must use arrow function
@@ -207,12 +247,27 @@ new Vue({
             this.table["table_quarter"] = this.timeCompare("qtr");
             this.table["tabel_half"] = this.timeCompare("half");
           });
+      }
+    },
+    getAllStatsTable(){
+      let type = this.selected.type;
+      let time = this.selected.time;
+      let category = this.selected.category;
+      let statistic = this.selected.statistic;
+
+      if (type && time && category && statistic) {
+        this.loading = true;
+
+        if (!this.currentPage) {
+          this.currentPage = 1;
+          this.changePage(this.currentPage);
+        }
 
         // ===== Getting all time stats table =====
         axios
           .post(statsUrl, {
             page: 1,
-            team: type,
+            team: "team",
             time: "allTime",
             category: category,
             stat: statistic,
@@ -225,7 +280,6 @@ new Vue({
               // console.log(Object.keys(this.statObject));
               urlKeys = Object.keys(this.statObject);
               urlKeys.forEach((key) => {
-                // console.log('----------key--------',key);
                 this.statObject[key].forEach((object) => {
                   // console.log(object.URL);
                   if (this.allTime_stats[0][key]) {
@@ -233,7 +287,6 @@ new Vue({
                   }
                 });
               });
-              // console.log('this.statObject',this.statObject);
             }
           });
       }
@@ -291,7 +344,6 @@ new Vue({
       this.beforePage = selectedPage - 1;
       this.afterPage = selectedPage + 1;
       this.getTable();
-      console.log(this.currentPage);
     },
 
   },

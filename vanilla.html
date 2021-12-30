@@ -38,7 +38,7 @@
     ></script>
   </head>
 
-  <body>
+  <body class="mb-5">
     <div class="container-fluid bg-primary brand royal-blue position-fixed">
       <div class="row">
         <nav class="navbar">
@@ -78,9 +78,6 @@
                   >
                     {{ type_option.text }}
                   </option>
-                  <!-- <option value=""></option>
-                <option value="team">Team</option>
-                <option value="individual">Player</option> -->
                 </select>
               </div>
             </div>
@@ -114,11 +111,10 @@
               <div class="form-group">
                 <label>Category</label>
                 <select
-                  id="category_option"
                   class="form-control"
                   name="category"
                   v-model="selected.category"
-                  @change="getStats(); getTable();"
+                  @change="getStats(); getTable(); emptyOldStatOption();"
                 >
                   <option value="" disabled selected>Choose Category</option>
                   <!-- category_options insert -->
@@ -141,7 +137,7 @@
                   class="form-control"
                   name="statistic"
                   v-model="selected.statistic"
-                  @change="getTable(); statUI()"
+                  @change="getTable(); statUI(); getAllStatsTable();"
                 >
                   <!-- statistic_option insert -->
                   <option value="" disabled selected>Choose Statistic</option>
@@ -179,7 +175,6 @@
                   type="button"
                   class="btn btn-success btn-sm"
                   style="width: 100%; height: 100%;"
-                  @click="getTable"
                 >
                   Update
                 </button>
@@ -189,17 +184,17 @@
 
           <div v-if="advanceFilter">
             <form>
-              <div class="form group">
+              <div class="form group" v-model="conferences">
                 <label>Conference</label>
+
                 <select
                   class="form-control"
-                  name="conference"
-                  ng-model="option['conference']"
-                  ng-change="changeFrom('conference')"
+                  v-model="selected.conference"
+                  @change="getOppoent();getTable();"
                 >
-                  <option value="">--None--</option>
-                  <option ng-repeat="c in allConferences" value="Big12"
-                    >Big12</option
+                  <option value="" disabled selected>Choose Conference</option>
+                  <option v-for="c in conferences" v-bind:value="c.name"
+                    >{{ c.name }}</option
                   >
                 </select>
               </div>
@@ -208,17 +203,16 @@
                 <label>or</label>
               </div>
 
-              <div class="form group">
+              <div class="form group" v-model="opponents">
                 <label>Opponent</label>
                 <select
                   class="form-control"
-                  name="opponents"
-                  ng-model="option['opponent']"
-                  ng-change="changeFrom('opponent')"
+                  v-model="selected.opponent"
+                  @change="getTable"
                 >
-                  <option value="">--None--</option>
-                  <option ng-repeat="c in confOpponents" value="{{c.id}}"
-                    >c.name</option
+                  <option value="" disabled selected>Choose Opponent</option>
+                  <option v-for="op in opponents" v-bind:value="op.id"
+                    >{{ op.name }}</option
                   >
                 </select>
               </div>
@@ -231,27 +225,28 @@
                 <label>Location</label>
                 <select
                   class="form-control"
-                  name="location"
-                  ng-model="option['location']"
-                  ng-change="changeFrom('location')"
+                  v-model="selected.location"
+                  @change="getTable"
                 >
-                  <option value="">--None--</option>
+                  <option value="" disabled selected>Choose Location</option>
                   <option value="H">Home Games</option>
                   <option value="V">Away Games</option>
                   <option value="N">Neutral Games</option>
                   <option value="P">Postseason Games</option>
                 </select>
               </div>
+
               <hr />
+
               <div class="form group col-xs-6">
                 <label>Ranked</label>
                 <select
                   class="form-control"
                   name="ranked"
-                  ng-model="option['ranked']"
-                  ng-change="changeFrom('ranked')"
+                  v-model="selected.ranked"
+                  @change="getTable"
                 >
-                  <option value="">--None--</option>
+                  <option value="" disabled selected>Choose Ranked</option>
                   <option value="25">vs. Top 25</option>
                   <option value="20">vs. Top 20</option>
                   <option value="15">vs. Top 15</option>
@@ -265,34 +260,50 @@
                 <label>Time span in </label>
                 <select
                   class="form-control"
-                  name="CustTime"
-                  ng-model="option['yearOrDate']"
-                  ng-change="changeDateOrYearValues()"
+                  v-model="selected.timeSpan"
+                  @change="cleanTimeSpan"
                 >
                   <option value="year">Years</option>
                   <option value="date">Dates</option>
                 </select>
               </div>
+
               <label>From</label>
-              <div class="form group" ng-if="option['yearOrDate'] === 'date'">
+              <!-- When Time span === date start -->
+              <div class="form group" v-if="selected.timeSpan === 'date'">
                 <input
                   type="date"
-                  name="custDate1"
-                  id="custDate1"
-                  ng-model="option['date1']"
-                  ng-change="changeRangeValue('date1')"
+                  v-model="selected.date1"
                   class="form-control"
+                  @change="getTable"
                 />
                 <label>to</label>
                 <input
                   type="date"
-                  name="custDate2"
-                  id="custDate2"
-                  ng-model="option['date2']"
-                  ng-change="changeRangeValue('date2')"
+                  v-model="selected.date2"
                   class="form-control"
+                  @change="getTable"
                 />
               </div>
+              <!-- When Time span === date end -->
+
+              <!-- When Time span === year start -->
+              <div class="form group" v-if="selected.timeSpan === 'year'">
+                <input
+                  type="text"
+                  v-model="selected.year1"
+                  class="form-control"
+                  @change="getTable"
+                />
+                <label>to</label>
+                <input
+                  type="text"
+                  v-model="selected.year2"
+                  class="form-control"
+                  @change="getTable"
+                />
+              </div>
+              <!-- When Time span === year end -->
             </form>
           </div>
 
@@ -319,6 +330,7 @@
                 </thead>
                 <tbody>
                   <tr v-if=" stats && stats.length <= 0">
+                    <!-- <tr v-if="stats.length > 0"> -->
                     <td
                       v-if="timeCompare('season') || timeCompare('career')"
                       colspan="4"
