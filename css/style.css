@@ -102,3 +102,30 @@ body i {
 .sidebar.active {
   right: 0px;
 }
+
+@media only screen and (max-width: 600px) {
+  .icon-info {
+    color: #4169e1;
+    right: 65px;
+    top: 30px;
+    font-size: 10px;
+    padding: 5px 13px;
+    border-radius: 25px;
+    background-color: #fff;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* set 0 for computer */
+    /* set 1 for mobile */
+    opacity: 1;
+  }
+
+  .icon-info:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    background: #fff;
+    right: -7px;
+    top: 30%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+}
