@@ -103,6 +103,7 @@ body i {
   right: 0px;
 }
 
+/* from 0 to 600px width */
 @media only screen and (max-width: 600px) {
   .icon-info {
     color: #4169e1;
@@ -127,5 +128,16 @@ body i {
     right: -7px;
     top: 30%;
     transform: translateX(-50%) rotate(45deg);
+  }
+}
+
+/* from 0 to 600px width */
+@media only screen and (max-width: 368px) {
+  .icon-info {
+    display: none;
+  }
+
+  .icon-info:before {
+    display: none;
   }
 }
