@@ -185,6 +185,17 @@ new Vue({
       this.selected.statistic = undefined;
       this.loading = false;
     },
+    clearAdvancedOptions(){
+      this.selected.conference = undefined;
+      this.selected.location = undefined;
+      this.selected.opponent = undefined;
+      this.selected.ranked = undefined;
+      this.selected.date1 = undefined;
+      this.selected.date2 = undefined;
+      this.selected.year1 = undefined;
+      this.selected.year2 = undefined;
+      this.getTable();
+    },
     getTable() {
       let type = this.selected.type;
       let time = this.selected.time;
