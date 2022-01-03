@@ -357,9 +357,15 @@ new Vue({
       this.getTable();
     },
     playUrlTrim(nid, opponent){
+      // 1. get correct respone, but 
       // https://byucougars.com/game/football/1295638/south-florida#eventstats
+      // 2. redirect to alternative page when response is wrong
+      // https://byucougars.com/node/78097
+      
       var title = opponent.replaceAll(/[^\w\s]/gi, '').replaceAll(" ", "-").toLowerCase()
-      return `https://byucougars.com/game/football/${nid}/${title}#eventstats`;
+      // url = `https://byucougars.com/game/football/${nid}/${title}#eventstats`
+      url = `https://byucougars.com/node/${nid}`;
+      return url
     },
   },
 });
